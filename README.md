@@ -1,8 +1,8 @@
 # C-Sharp Winforms For MTD School Project
 
 ## Description
-![lang](https://img.shields.io/github/languages/top/Kuro-kitten1970/C-Sharp-Winforms-For-RSU-Project)
-![VS2022](https://img.shields.io/badge/Visual_Studio_2022-pink)
+![lang](https://img.shields.io/github/languages/top/Kuro-kitten1970/C-Sharp-Winforms-For-RSU-Project?logo=license)
+![VS2022](https://img.shields.io/badge/Visual_Studio-2022-pink)
 ![license](https://img.shields.io/github/license/Kuro-kitten1970/C-Sharp-Winforms-For-RSU-Project?logo=license)
 ![last_commit](https://img.shields.io/github/last-commit/Kuro-kitten1970/C-Sharp-Winforms-For-RSU-Project?logo=last_commit)
 
