@@ -14,8 +14,12 @@ namespace Lab_Sheet_04
         int currentFrame = 0;
         int numberOfFrames = 3;
         int num = 0;
+        int currentPositionX = 0, currentPositionY = 0;
+        int mouseClickPositionX = 0, mouseClickPositionY = 0;
 
         byte walkSide;
+
+        bool disableX = false, disableY = true;
 
         ImportImages importImages = new ImportImages();
 
@@ -196,6 +200,71 @@ namespace Lab_Sheet_04
         private void btn_KeyUp(object sender, KeyEventArgs e)
         {
             tmrWalk.Stop();
+        }
+
+        private void tmrMouseClick_Tick(object sender, EventArgs e)
+        {
+            currentFrame = (currentFrame + 1) % numberOfFrames;
+
+            currentPositionX = picFrame.Location.X;
+            currentPositionY = picFrame.Location.Y;
+
+            if (!disableX)
+            {
+                if (mouseClickPositionX > currentPositionX)
+                {
+                    walkSide = 2;
+                    currentPositionX += 2;
+                }
+                else
+                {
+                    walkSide = 3;
+                    currentPositionX -= 2;
+                }
+            }
+
+            if (!disableY)
+            {
+                if (mouseClickPositionY < currentPositionY)
+                {
+                    walkSide = 0;
+                    currentPositionY -= 2;
+                }
+                else
+                {
+                    walkSide = 1;
+                    currentPositionY += 2;
+                }
+            }
+
+            picFrame.Location = new Point(currentPositionX, currentPositionY);
+
+            if ((walkSide == 2 && currentPositionX >= mouseClickPositionX) || (walkSide == 3 && currentPositionX <= mouseClickPositionX))
+            {
+                currentPositionX = 0;
+                disableX = true;
+                disableY = false;
+            }
+
+            if ((walkSide == 0 && currentPositionY <= mouseClickPositionY) || (walkSide == 1 && currentPositionY >= mouseClickPositionY))
+            {
+                currentPositionY = 0;
+            }
+
+            if (currentPositionY == 0 && currentPositionY == 0)
+            {
+                disableX = false;
+                disableY = true;
+                tmrMouseClick.Stop();
+            }
+        }
+
+        private void Nani_MouseClick(object sender, MouseEventArgs e)
+        {
+            mouseClickPositionX = e.X;
+            mouseClickPositionY = e.Y;
+
+            tmrMouseClick.Start();
         }
     }
 }
