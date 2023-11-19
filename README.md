@@ -1,4 +1,4 @@
-# C-Sharp Winforms For RSU School Project
+# C-Sharp Winforms For Rangsit University Project
 
 ## Description
 ![lang](https://img.shields.io/github/languages/top/Kuro-kitten1970/C-Sharp-Winforms-For-RSU-Project?logo=license)
