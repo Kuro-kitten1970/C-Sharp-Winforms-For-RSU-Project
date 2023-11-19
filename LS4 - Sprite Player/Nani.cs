@@ -214,11 +214,13 @@ namespace Lab_Sheet_04
                 if (mouseClickPositionX > currentPositionX)
                 {
                     walkSide = 2;
+                    picFrame.Image = new Bitmap(importImages.rightIMG[currentFrame]);
                     currentPositionX += 2;
                 }
                 else
                 {
                     walkSide = 3;
+                    picFrame.Image = new Bitmap(importImages.leftIMG[currentFrame]);
                     currentPositionX -= 2;
                 }
             }
@@ -228,11 +230,13 @@ namespace Lab_Sheet_04
                 if (mouseClickPositionY < currentPositionY)
                 {
                     walkSide = 0;
+                    picFrame.Image = new Bitmap(importImages.upIMG[currentFrame]);
                     currentPositionY -= 2;
                 }
                 else
                 {
                     walkSide = 1;
+                    picFrame.Image = new Bitmap(importImages.downIMG[currentFrame]);
                     currentPositionY += 2;
                 }
             }
@@ -251,7 +255,7 @@ namespace Lab_Sheet_04
                 currentPositionY = 0;
             }
 
-            if (currentPositionY == 0 && currentPositionY == 0)
+            if (currentPositionY == 0)
             {
                 disableX = false;
                 disableY = true;
