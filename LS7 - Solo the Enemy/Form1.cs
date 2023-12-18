@@ -12,7 +12,7 @@ namespace Lab_Sheet_07
         }
 
         private int playerCurrentHP, botCurrentHP;
-        private int playerMaxHP = 1000000, botMaxHP = 1000000;
+        private int playerMaxHP = 1000000, botMaxHP = 100000;
 
         private int ATK2CD, ATK3CD;
         private int botATK2CD, botATK3CD;
@@ -168,6 +168,8 @@ namespace Lab_Sheet_07
             currentHP -= power;
             lblBotHP.Text = botCurrentHP.ToString("#,0") + "/1,000,000";
             LogShow(true, 3, power);
+
+            HPChecker(true, currentHP);
         }
 
         private void botATK3_Tick(object sender, EventArgs e, ref int currentHP)
@@ -176,6 +178,8 @@ namespace Lab_Sheet_07
             currentHP -= power;
             lblPlayerHP.Text = botCurrentHP.ToString("#,0") + "/1,000,000";
             LogShow(false, 3, power);
+
+            HPChecker(false, currentHP);
         }
 
         private void CooldownSystem(byte Case, bool isPlayer)
