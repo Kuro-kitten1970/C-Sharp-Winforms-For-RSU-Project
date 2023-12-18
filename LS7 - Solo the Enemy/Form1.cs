@@ -11,244 +11,250 @@ namespace Lab_Sheet_07
             InitializeComponent();
         }
 
-        private int playerHP, pcHP;
-        private int playerMaxHP = 1000000, pcMaxHP = 1000000;
-        private int coolDownATK2 = 10, coolDownATK3 = 10;
-        private int timeCount1, timeCount2;
-        private int pcTimeCount1, pcTimeCount2;
+        private int playerCurrentHP, botCurrentHP;
+        private int playerMaxHP = 1000000, botMaxHP = 1000000;
+
+        private int ATK2CD, ATK3CD;
+        private int botATK2CD, botATK3CD;
 
         private string playerLog = Environment.NewLine + "Player ATK";
-        private string pcLog = Environment.NewLine + "PC ATK";
+        private string botLog = Environment.NewLine + "Bot ATK";
 
         private Random powerOfATK = new Random();
-        private Random comATKSelection = new Random();
+        private Random botATKSelection = new Random();
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            playerMaxHP = 10000; pcMaxHP = 10000;
+            playerCurrentHP = playerMaxHP; botCurrentHP = botMaxHP;
 
             foreach (Control ctl in this.Controls)
             {
-                if (ctl.GetType() == typeof(Button)) { ctl.Enabled = true; }
+                if (ctl.GetType() == typeof(Button)) ctl.Enabled = true;
             }
 
-            tmrComPlay.Enabled = true;
+            tmrBotPlay.Enabled = true;
         }
 
         private void btnATK_Click(object sender, EventArgs e)
         {
             byte x = Convert.ToByte((sender as Button).Tag);
 
-            AttackSystem(x, pcMaxHP, pcHP, true);
-            lblPlayerHP.Text = pcHP.ToString("#,0") + "/1,000,000";
+            AttackSystem(x, ref botCurrentHP, true);
+            lblBotHP.Text = botCurrentHP.ToString("#,0") + "/1,000,000";
         }
 
-        private void tmrCDPlayer_Tick(object sender, EventArgs e, Control control)
+        private void tmrBotPlay_Tick(object sender, EventArgs e)
         {
-            Timer timer = sender as Timer;
-            byte x = Convert.ToByte(timer.Tag);
+            byte x = (byte)botATKSelection.Next(1, 4);
 
-            if (x == 2) { control.Text = timeCount1.ToString(); timeCount1--; }
-            if (x == 3) { control.Text = timeCount2.ToString(); timeCount2--; }
-
-            control.Enabled = false;
-
-            if (timeCount1 == 0)
+            if ((x == 2 && botATK2CD != 0) || (x == 3 && botATK3CD != 0))
             {
-                if ((byte)timer.Tag == 2) { (sender as Timer).Enabled = false; control.Enabled = true; }
-            }
-
-            if (timeCount2 == 0)
-            {
-                if ((byte)timer.Tag == 3) { (sender as Timer).Enabled = false; control.Enabled = true; }
-            }
-        }
-
-        private void tmrCDComATK_Tick(object sender, EventArgs e, Control control)
-        {
-            Timer timer = sender as Timer;
-            byte x = Convert.ToByte(timer.Tag);
-
-            if (x == 2) { control.Text = pcTimeCount1.ToString(); pcTimeCount1--; }
-            if (x == 3) { control.Text = pcTimeCount2.ToString(); pcTimeCount2--; }
-
-            if (pcTimeCount1 == 0)
-            {
-                if ((byte)timer.Tag == 2) { (sender as Timer).Enabled = false; control.Enabled = true; }
-            }
-
-            if (pcTimeCount2 == 0)
-            {
-                if ((byte)timer.Tag == 3) { (sender as Timer).Enabled = false; control.Enabled = true; }
-            }
-        }
-
-        private void tmrComPlay_Tick(object sender, EventArgs e)
-        {
-            int comATK;
-
-            if (HPChecker())
-            {
-                tmrComPlay.Enabled = false;
+                AttackSystem(1, ref playerCurrentHP, false);
+                lblPlayerHP.Text = playerCurrentHP.ToString("#,0") + "/1,000,000";
                 return;
             }
 
-            if (!lblATK2.Enabled && !lblATK3.Enabled)
-            {
-                playerHP -= AttackSystem(1, playerMaxHP, playerHP, false);
-                lblPlayerHP.Text = playerHP.ToString("#,0") + "/1,000,000";
-            }
-            else
-            {
-                comATK = comATKSelection.Next(1, 4);
+            AttackSystem(x, ref playerCurrentHP, false);
+            lblPlayerHP.Text = playerCurrentHP.ToString("#,0") + "/1,000,000";
+        }
 
-                switch (comATK)
-                {
-                    case 1:
-                        playerHP -= AttackSystem(1, playerMaxHP, playerHP, false);
-                        break;
-                    case 2:
-                        playerHP -= AttackSystem(2, playerMaxHP, playerHP, false);
-                        lblATK2.Enabled = false;
-                        break;
-                    case 3:
-                        playerHP -= AttackSystem(3, playerMaxHP, playerHP, false);
-                        lblATK3.Enabled = false;
-                        break;
-                    default: break;
-                }
+        private void tmrCD3_Tick(object sender, EventArgs e)
+        {
+            ATK3CD--;
+            btnATK3.Text = ATK3CD.ToString();
 
-                lblPlayerHP.Text = playerHP.ToString("#,0") + "/1,000,000";
+            if (ATK3CD == 0)
+            {
+                btnATK3.Text = "ATK3";
+                btnATK3.Enabled = true;
+                tmrCD3.Enabled = false;
             }
         }
 
-        private int AttackSystem(byte atkCase, int maxHP, int currentHP, bool isPlayer)
+        private void tmrCD2_Tick(object sender, EventArgs e)
         {
-            int atkResult = 0;
+            ATK2CD--;
+            btnATK2.Text = ATK2CD.ToString();
 
-            if (atkCase == 1)
+            if (ATK2CD == 0)
             {
-                atkResult = powerOfATK.Next(1500, 1701);
-                LogShow(isPlayer, atkCase, atkResult);
+                btnATK2.Text = "ATK2";
+                btnATK2.Enabled = true;
+                tmrCD2.Enabled = false;
             }
-            else if (atkCase == 2)
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    atkResult = powerOfATK.Next(1000, 2001);
-                    LogShow(isPlayer, atkCase, atkResult);
-                }
+        }
 
-                timeCount1 = coolDownATK2;
-                CooldownSystem(2);
-            }
-            else if (atkCase == 3)
+        private void tmrCDBot2_Tick(object sender, EventArgs e)
+        {
+            botATK2CD--;
+            lblATK2.Text = botATK2CD.ToString();
+
+            if (botATK2CD == 0)
             {
-                int getPercent = (currentHP * 100) / maxHP;
-                if (getPercent > 25)
-                {
+                lblATK2.Text = "ATK2";
+                tmrCDBot2.Enabled = false;
+            }
+        }
+
+        private void tmrCDBot3_Tick(object sender, EventArgs e)
+        {
+            botATK3CD--;
+            lblATK3.Text = botATK3CD.ToString();
+
+            if (botATK3CD == 0)
+            {
+                btnATK2.Text = "ATK2";
+                tmrCDBot3.Enabled = false;
+            }
+        }
+
+        private void AttackSystem(byte atkCase, ref int currentHP, bool isPlayer)
+        {
+            switch (atkCase)
+            {
+                case 1:
+                    int power1 = powerOfATK.Next(1500, 1701);
+                    currentHP -= power1;
+
+                    LogShow(isPlayer, atkCase, power1);
+                    HPChecker(isPlayer, currentHP);
+                    break;
+                case 2:
+                    CooldownSystem(atkCase, isPlayer);
+                    int power2 = 0;
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        power2 = powerOfATK.Next(1000, 2001);
+                        currentHP -= power2;
+                        LogShow(isPlayer, atkCase, power2);
+                    }
+
+                    HPChecker(isPlayer, currentHP);
+                    break;
+                case 3:
+                    CooldownSystem(atkCase, isPlayer);
+
+                    if (currentHP < 250000)
+                    {
+                        if (isPlayer)
+                        {
+                            playerATK3.Tick += (sender, e) => playerATK3_Tick(sender, e, ref botCurrentHP);
+                            playerATK3.Enabled = true;
+                        }
+                        else
+                        {
+                            botATK3.Tick += (sender, e) => botATK3_Tick(sender, e, ref botCurrentHP);
+                            botATK3.Enabled = true;
+                        }
+                        return;
+                    }
+
                     for (int i = 0; i < 10; i++)
                     {
-                        atkResult = powerOfATK.Next(1400, 2501);
-                        LogShow(isPlayer, atkCase, atkResult);
+                        int power3 = powerOfATK.Next(1400, 2501);
+                        currentHP -= power3;
+                        LogShow(isPlayer, atkCase, power3);
                     }
-                }
-                else
-                {
-                    while (getPercent <= 25 && getPercent >= 0 )
-                    {
-                        atkResult = powerOfATK.Next(1400, 2501);
-                        LogShow(isPlayer, 3, atkResult);
-                    }
-                }
 
-                timeCount2 = coolDownATK3;
-                CooldownSystem(3);
+                    HPChecker(isPlayer, currentHP);
+                    break;
+            }
+        }
+
+        private void playerATK3_Tick(object sender, EventArgs e, ref int currentHP)
+        {
+            int power = powerOfATK.Next(1400, 2501);
+            currentHP -= power;
+            lblBotHP.Text = botCurrentHP.ToString("#,0") + "/1,000,000";
+            LogShow(true, 3, power);
+        }
+
+        private void botATK3_Tick(object sender, EventArgs e, ref int currentHP)
+        {
+            int power = powerOfATK.Next(1400, 2501);
+            currentHP -= power;
+            lblPlayerHP.Text = botCurrentHP.ToString("#,0") + "/1,000,000";
+            LogShow(false, 3, power);
+        }
+
+        private void CooldownSystem(byte Case, bool isPlayer)
+        {
+            if (isPlayer)
+            {
+                if (Case == 2 && ATK2CD == 0)
+                {
+                    ATK2CD = 30;
+                    btnATK2.Enabled = false;
+                    tmrCD2.Enabled = true;
+                }
+                else if (Case == 3 && ATK3CD == 0)
+                {
+                    ATK3CD = 90;
+                    btnATK3.Enabled = false;
+                    tmrCD3.Enabled = true;
+                }
             }
             else
             {
-
+                if (Case == 2 && botATK2CD == 0)
+                {
+                    botATK2CD = 30;
+                    tmrCDBot2.Enabled = true;
+                }
+                else if (Case == 3 && botATK3CD == 0)
+                {
+                    botATK3CD = 90;
+                    tmrCDBot3.Enabled = true;
+                }
             }
-
-            return atkResult;
-        }
-
-        private void CooldownSystem(byte numCase)
-        {
-            if (numCase == 2)
-            {
-                TimerSetUp(numCase, btnATK2, true);
-            }
-            else if (numCase == 3)
-            {
-                TimerSetUp(numCase, btnATK3, true);
-            }
-            else { }
-        }
-
-        private void TimerSetUp(byte i, Control control, bool isPlayer)
-        {
-            Timer timer = new Timer() { Interval = 1000, Tag = i };
-
-            if (isPlayer) { timer.Tick += (sender, e) => tmrCDPlayer_Tick(sender, e, control); }
-            else { timer.Tick += (sender, e) => tmrCDComATK_Tick(sender, e, control); }
-            
-            timer.Enabled = true;
         }
 
         private void LogShow(bool isPlayer, byte atkIndex, int damage)
         {
-            if (isPlayer)
+            string text = atkIndex + " deals damage : " + damage;
+
+            txbLog.AppendText((isPlayer) ? playerLog + text : botLog + text);
+            txbLog.SelectionStart = txbLog.Text.Length;
+            txbLog.ScrollToCaret();
+        }
+
+        private void HPChecker(bool isPlayer, int currentHP)
+        {
+            if (currentHP <= 0)
             {
-                txbLog.Text += playerLog + atkIndex + " deals damage : " + damage;
-            }
-            else
-            {
-                txbLog.Text += pcLog + atkIndex + " deals damage : " + damage;
+                ResetState(false);
+
+                if (isPlayer) MessageBox.Show("Player Win!");
+                else MessageBox.Show("Bot Win!");
             }
         }
 
-        private bool HPChecker()
+        private void ResetState(bool isEnable)
         {
-            if (playerHP <= 0)
+            foreach (Component component in this.components.Components)
             {
-                tmrComPlay.Enabled = false;
-                MessageBox.Show("Computer Wins!");
-
-                foreach (Control ctl in this.Controls)
+                if (component.GetType() == typeof(Timer))
                 {
-                    if (ctl.GetType() == typeof(Button))
-                    {
-                        if (ctl.Tag != null)
-                        {
-                            ctl.Enabled = false;
-                        }
-                    }
+                    Timer timer = (Timer)component;
+                    timer.Enabled = isEnable;
                 }
-
-                return true;
             }
-            else if (pcHP <= 0)
-            {
-                tmrComPlay.Enabled = false;
-                MessageBox.Show("Player Wins!");
 
-                foreach (Control ctl in this.Controls)
+            foreach (Control ctl in this.Controls)
+            {
+                if (ctl.GetType() == typeof(Button) && ctl.Name != "btnStart")
                 {
-                    if (ctl.GetType() == typeof(Button))
-                    {
-                        if (ctl.Tag != null)
-                        {
-                            ctl.Enabled = false;
-                        }
-                    }
+                    ctl.Enabled = isEnable;
                 }
-                return true;
             }
-            else
-            {
-                return false;
-            }
+
+            lblATK2.Text = "ATK2";
+            lblATK3.Text = "ATK3";
+            btnATK2.Text = "ATK2";
+            btnATK3.Text = "ATK3";
+
+            txbLog.Clear();
         }
     }
 }

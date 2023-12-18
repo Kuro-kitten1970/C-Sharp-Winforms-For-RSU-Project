@@ -34,16 +34,20 @@
             this.lblATK3 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.lblPCHP = new System.Windows.Forms.Label();
+            this.lblBotHP = new System.Windows.Forms.Label();
             this.lblPlayerHP = new System.Windows.Forms.Label();
             this.btnATK1 = new System.Windows.Forms.Button();
             this.btnATK2 = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnATK3 = new System.Windows.Forms.Button();
-            this.tmrCDComATK = new System.Windows.Forms.Timer(this.components);
-            this.tmrCDPlayer = new System.Windows.Forms.Timer(this.components);
-            this.tmrComPlay = new System.Windows.Forms.Timer(this.components);
+            this.tmrCD3 = new System.Windows.Forms.Timer(this.components);
+            this.tmrCD2 = new System.Windows.Forms.Timer(this.components);
+            this.tmrBotPlay = new System.Windows.Forms.Timer(this.components);
             this.txbLog = new System.Windows.Forms.TextBox();
+            this.tmrCDBot2 = new System.Windows.Forms.Timer(this.components);
+            this.tmrCDBot3 = new System.Windows.Forms.Timer(this.components);
+            this.playerATK3 = new System.Windows.Forms.Timer(this.components);
+            this.botATK3 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // lblATK1
@@ -90,7 +94,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(101, 30);
             this.label1.TabIndex = 3;
-            this.label1.Text = "PC HP";
+            this.label1.Text = "Bot HP";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label1.UseCompatibleTextRendering = true;
             // 
@@ -106,17 +110,17 @@
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label2.UseCompatibleTextRendering = true;
             // 
-            // lblPCHP
+            // lblBotHP
             // 
-            this.lblPCHP.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.lblPCHP.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.lblPCHP.Location = new System.Drawing.Point(149, 80);
-            this.lblPCHP.Name = "lblPCHP";
-            this.lblPCHP.Size = new System.Drawing.Size(190, 30);
-            this.lblPCHP.TabIndex = 5;
-            this.lblPCHP.Text = "1,000,000/1,000,000";
-            this.lblPCHP.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblPCHP.UseCompatibleTextRendering = true;
+            this.lblBotHP.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.lblBotHP.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.lblBotHP.Location = new System.Drawing.Point(149, 80);
+            this.lblBotHP.Name = "lblBotHP";
+            this.lblBotHP.Size = new System.Drawing.Size(190, 30);
+            this.lblBotHP.TabIndex = 5;
+            this.lblBotHP.Text = "1,000,000/1,000,000";
+            this.lblBotHP.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblBotHP.UseCompatibleTextRendering = true;
             // 
             // lblPlayerHP
             // 
@@ -184,29 +188,51 @@
             this.btnATK3.UseVisualStyleBackColor = true;
             this.btnATK3.Click += new System.EventHandler(this.btnATK_Click);
             // 
-            // tmrCDComATK
+            // tmrCD3
             // 
-            this.tmrCDComATK.Interval = 1000;
+            this.tmrCD3.Interval = 1000;
+            this.tmrCD3.Tick += new System.EventHandler(this.tmrCD3_Tick);
             // 
-            // tmrCDPlayer
+            // tmrCD2
             // 
-            this.tmrCDPlayer.Interval = 1000;
+            this.tmrCD2.Interval = 1000;
+            this.tmrCD2.Tick += new System.EventHandler(this.tmrCD2_Tick);
             // 
-            // tmrComPlay
+            // tmrBotPlay
             // 
-            this.tmrComPlay.Interval = 1000;
-            this.tmrComPlay.Tick += new System.EventHandler(this.tmrComPlay_Tick);
+            this.tmrBotPlay.Interval = 500;
+            this.tmrBotPlay.Tick += new System.EventHandler(this.tmrBotPlay_Tick);
             // 
             // txbLog
             // 
             this.txbLog.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.txbLog.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Append;
             this.txbLog.Location = new System.Drawing.Point(357, 20);
             this.txbLog.Margin = new System.Windows.Forms.Padding(15, 3, 3, 3);
             this.txbLog.Multiline = true;
             this.txbLog.Name = "txbLog";
+            this.txbLog.ReadOnly = true;
+            this.txbLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txbLog.Size = new System.Drawing.Size(267, 268);
             this.txbLog.TabIndex = 12;
-            this.txbLog.Text = "Player ATK3 deals damage : 9999";
+            // 
+            // tmrCDBot2
+            // 
+            this.tmrCDBot2.Interval = 1000;
+            this.tmrCDBot2.Tick += new System.EventHandler(this.tmrCDBot2_Tick);
+            // 
+            // tmrCDBot3
+            // 
+            this.tmrCDBot3.Interval = 1000;
+            this.tmrCDBot3.Tick += new System.EventHandler(this.tmrCDBot3_Tick);
+            // 
+            // playerATK3
+            // 
+            this.playerATK3.Interval = 250;
+            // 
+            // botATK3
+            // 
+            this.botATK3.Interval = 250;
             // 
             // Form1
             // 
@@ -219,7 +245,7 @@
             this.Controls.Add(this.btnATK2);
             this.Controls.Add(this.btnATK1);
             this.Controls.Add(this.lblPlayerHP);
-            this.Controls.Add(this.lblPCHP);
+            this.Controls.Add(this.lblBotHP);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.lblATK3);
@@ -243,16 +269,20 @@
         private System.Windows.Forms.Label lblATK3;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label lblPCHP;
+        private System.Windows.Forms.Label lblBotHP;
         private System.Windows.Forms.Label lblPlayerHP;
         private System.Windows.Forms.Button btnATK1;
         private System.Windows.Forms.Button btnATK2;
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Button btnATK3;
-        private System.Windows.Forms.Timer tmrCDComATK;
-        private System.Windows.Forms.Timer tmrCDPlayer;
-        private System.Windows.Forms.Timer tmrComPlay;
+        private System.Windows.Forms.Timer tmrCD3;
+        private System.Windows.Forms.Timer tmrCD2;
+        private System.Windows.Forms.Timer tmrBotPlay;
         private System.Windows.Forms.TextBox txbLog;
+        private System.Windows.Forms.Timer tmrCDBot2;
+        private System.Windows.Forms.Timer tmrCDBot3;
+        private System.Windows.Forms.Timer playerATK3;
+        private System.Windows.Forms.Timer botATK3;
     }
 }
 
